@@ -30,7 +30,7 @@ The output of the second phase will be displayed to the user along with the stat
 
 #### **THIRD PHASE: FRONTEND AND DESIGN**
 
-	(This phase consists of **one component**.)
+(This phase consists of **one component**.)
 
 •	**COMPONENT D**: This is going to be a user-friendly web-application complete with a robust python-based (preferably) backend for organising user input as well as running models and recommendation systems. The frontend will be minimalist and presentable providing both the content recommendation and user state coupled with an easy-to-use interface.
 

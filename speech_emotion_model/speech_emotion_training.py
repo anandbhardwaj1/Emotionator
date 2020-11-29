@@ -1,5 +1,5 @@
 
-# In[1]:
+# %%
 
 import os
 import glob
@@ -22,7 +22,7 @@ from sklearn.metrics import accuracy_score
 from scipy import signal
 get_ipython().magic('matplotlib inline')
 
-# In[2]:
+# %%
 
 # Listing the files of the working directory (Utility function)
 
@@ -45,7 +45,7 @@ def getListOfFiles(dirName):
 dirName = './speech-emotion-recognition-ravdess-data(1)'
 listOfFiles = getListOfFiles(dirName)
 
-# In[3]:
+# %%
 
 # Bucketing feature into categorical variable
 
@@ -61,7 +61,7 @@ def envelope(y, rate, threshold):
             mask.append(False)
     return mask
 
-# In[4]:
+# %%
 # Defining FFT features
 
 
@@ -71,7 +71,7 @@ def calc_fft(y, rate):
     Y = abs(np.fft.rfft(y)/n)
     return(Y, freq)
 
-# In[19]:
+# %%
 
 # Defining feature sets
 
@@ -93,7 +93,7 @@ for file in range(0, len(listOfFiles), 1):
     mfccs[file] = mel
 
 
-# In[20]:
+# %%
 
 # Reading the training dataset
 
@@ -107,7 +107,7 @@ for file in tqdm(glob.glob(dynamic_file_path)):
                   data=signal[mask])
 
 
-# In[21]:
+# %%
 
 # Extracting the training features
 
@@ -133,7 +133,7 @@ def extract_feature(file_name, mfcc, chroma, mel):
     return result
 
 
-# In[22]:
+# %%
 
 # List of possible emotions
 
@@ -153,7 +153,8 @@ emotions = {
 observed_emotions = ['calm', 'happy', 'sad', 'angry']
 
 
-# In[23]:
+# %%
+
 # Load the data and extract features for each sound file
 
 def load_data(test_s=0.33):
@@ -171,7 +172,7 @@ def load_data(test_s=0.33):
     return train_test_split(np.array(x), y, test_size=test_s, random_state=9)
 
 
-# In[24]:
+# %%
 
 # Defining training and test sets
 
@@ -184,13 +185,13 @@ y_train_map = np.array(y_trai).T
 y_train = y_train_map[0]
 train_filename = y_train_map[1]
 
-# In[25]:
+# %%
 
 # Printing the number of features extracted
 
 print(f'Features extracted: {x_train.shape[1]}')
 
-# In[26]:
+# %%
 
 # Initializing the Multi Layer Perceptron Classifier
 
@@ -201,13 +202,13 @@ model = MLPClassifier(alpha=0.01,
                       learning_rate='adaptive',
                       max_iter=500)
 
-# In[27]:
+# %%
 
 # Training the model
 
 model.fit(x_train, y_train)
 
-# In[28]:
+# %%
 
 # Pickling the trained model
 
@@ -216,19 +217,19 @@ Pkl_Filename = "Emotion_Voice_Detection_Model.pkl"
 with open(Pkl_Filename, 'wb') as file:
     pickle.dump(model, file)
 
-# In[29]:
+# %%
 
 # Loading the pickled model
 with open(Pkl_Filename, 'rb') as file:
     Emotion_Voice_Detection_Model = pickle.load(file)
 
-# In[30]:
+# %%
 
 # Predicting the user emotion
 
 y_pred = Emotion_Voice_Detection_Model.predict(x_test)
 
-# In[31]:
+# %%
 
 # Printing and saving the prediction
 
@@ -237,7 +238,7 @@ y_pred1['file_names'] = test_filename
 print(y_pred1)
 y_pred1.to_csv('predictionfinal.csv')
 
-# In[32]:
+# %%
 
 # Calculating the accuracy of our model
 accuracy = accuracy_score(y_true=y_test, y_pred=y_pred)

@@ -1,4 +1,4 @@
-# In[1]:
+# %%
 
 import sys
 import os
@@ -14,7 +14,7 @@ from keras.regularizers import l2
 from keras.utils import np_utils
 
 
-# In[2]:
+# %%
 
 # Reading the dataset and initializing the train and test sets
 
@@ -36,7 +36,7 @@ for index, row in df.iterrows():
         print(f"error occured at index :{index} and row:{row}")
 
 
-# In[3]:
+# %%
 
 # Optimally defining the training parameters of the model
 
@@ -57,7 +57,7 @@ train_y = np_utils.to_categorical(train_y, num_classes=num_labels)
 test_y = np_utils.to_categorical(test_y, num_classes=num_labels)
 
 
-# In[4]:
+# %%
 
 # Normalizing the training and test data between 0 and 1
 
@@ -73,7 +73,7 @@ X_train = X_train.reshape(X_train.shape[0], 48, 48, 1)
 X_test = X_test.reshape(X_test.shape[0], 48, 48, 1)
 
 
-# In[5]:
+# %%
 
 # Initializing the neural network
 
@@ -127,7 +127,7 @@ model.add(Dropout(0.2))
 model.add(Dense(num_labels, activation='softmax'))
 
 
-# In[6]:
+# %%
 
 # Defining the appropriate loss and optimization function for the model
 
@@ -136,7 +136,7 @@ model.compile(loss=categorical_crossentropy,
               metrics=['accuracy'])
 
 
-# In[7]:
+# %%
 
 # Training the model on predefined parameters
 
@@ -150,9 +150,6 @@ model.fit(X_train, train_y,
 
 # In[8]:
 
-# Pickling the parameters and weights of the trained model
+# Pickling the architecture and weights of the trained model
 
-fer_json = model.to_json()
-with open("Facial_Emotion_Detection_Model_Parameters.json", "w") as json_file:
-    json_file.write(fer_json)
-model.save_weights("Facial_Emotion_Detection_Model_Weights.h5")
+model.save('Facial_Emotion_Detection_Model_Weights.hdf5')

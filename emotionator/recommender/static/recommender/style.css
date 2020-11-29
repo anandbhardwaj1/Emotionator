@@ -1,0 +1,122 @@
+.contact-icon {
+    font-size: 1.8rem;
+}
+
+.navbar-bg {
+    background: #1e2124;
+}
+
+.navbar-brand {
+    font-size: 1.6rem;
+}
+
+.nav-tabs {
+    border-bottom: 0px;
+}
+
+.nav-link {
+    background-color: #1e2124;
+    color: white;
+}
+
+.nav-tabs .nav-link {
+    border: 0px;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+    background-color: #36393e;
+}
+
+.panel {
+    padding-top: 2rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+
+.nav-tabs {
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+    background-color: #36393e;
+}
+
+.fill-up {
+    width: 100%;
+    height: 100%;
+}
+
+.no-spacing {
+    margin: 0px;
+    padding: 0px;
+    border: 0px;
+    box-sizing: 0px;
+}
+
+.emotion-panel {
+    background: #282b30;
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+
+.emotion-state-wrapper {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.emotion-label {
+    font-weight: 600;
+    font-size: larger;
+}
+
+.content-panel {
+    background: #36393e;
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+
+.no-bullet {
+    list-style-type: none;
+}
+
+.list-pic {
+    width: 4.2rem;
+    height: 4.2rem;
+    margin-right: 1.5rem;
+    float: left;
+}
+
+.form-header {
+    color: #FF851B;
+}
+
+.audio-input-wrapper {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.genre-panel {
+    background: #282b30;
+    width: 100%;
+    height: 100%;
+    color: white;
+}
+
+.genre-list-wrapper {
+    margin-top: 2.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.vidInput {
+    width: 640px;
+    height: 480px;
+}
+
+.vidCanvas {
+    width: 640px;
+    height: 480px;
+}
