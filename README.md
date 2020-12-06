@@ -3,7 +3,7 @@
 ## START-UP INSTRUCTIONS
 
 1. Navigate to the directory "./Emotionator/emotionator".
-2. Run the command '''python manage.py runserver''' on powershell/command-prompt.
+2. Run the command **python manage.py runserver** on powershell/command-prompt.
 
 ## PROJECT DESCRIPTION:
 
