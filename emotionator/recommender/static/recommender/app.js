@@ -1,3 +1,54 @@
+// Script to handle video camera status
+
+var vidStatus = document.getElementById('camera-status');
+navigator.getMedia = ( navigator.getUserMedia ||
+    navigator.webkitGetUserMedia ||
+    navigator.mozGetUserMedia ||
+    navigator.msGetUserMedia);
+
+navigator.getMedia({video: true}, function() {
+    vidStatus.style = "color: #2ECC40;";
+    vidStatus.innerHTML = 'Available';
+}, function() {
+    vidStatus.style = "color: #FF4136;";
+    vidStatus.innerHTML = 'Not Available';
+    document.getElementById('record-video').disabled = true;
+});
+
+// Function to handle navbar layout on scrolling 
+
+window.addEventListener('scroll',function(e) {
+    if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        document.getElementById('navbar').style.position = 'fixed';
+    }
+    else {
+        document.getElementById('navbar').style.position = 'sticky';
+    }
+});
+
+// Script to handle video recording status bar 
+
+var rflag = 0;
+function move() {
+    if (rflag == 0) {
+        rflag = 1;
+        var elem = document.getElementById("bar");
+        var width = 1;
+        var id = setInterval(frame, 68);
+        function frame() {
+            if (width >= 100) {
+                clearInterval(id);
+                rflag = 0;
+            } 
+            else {
+                width++;
+                elem.style.width = width + "%";
+            }
+        }
+    }
+}
+
+
 // Script to handle uploading and reccording audio files
 
 URL = window.URL || window.webkitURL;
@@ -76,7 +127,7 @@ function createDownloadLink(blob) {
     
     var url = URL.createObjectURL(blob);
     var au = document.createElement('audio');
-    var li = document.createElement('li');
+    var li = document.createElement('div');
     var link = document.createElement('a');
 
     var filename = new Date().toISOString();
@@ -86,14 +137,15 @@ function createDownloadLink(blob) {
 
     link.href = url;
     link.download = filename+".wav";
+    link.classList.add('record-link', 'btn', 'btn-info');
     link.innerHTML = "Save to disk";
 
     li.appendChild(au);
-    li.appendChild(document.createTextNode(filename+".wav "))
     li.appendChild(link);
     
     var upload = document.createElement('a');
     upload.href="#";
+    upload.classList.add('record-link', 'btn', 'btn-success');
     upload.innerHTML = "Upload";
     upload.addEventListener("click", function(event){
             var fd=new FormData();
@@ -115,6 +167,7 @@ function createDownloadLink(blob) {
     li.appendChild(document.createTextNode (" "));
     li.appendChild(upload);
 
+    recordingsList.innerHTML = '';
     recordingsList.appendChild(li);
 }
 
@@ -122,39 +175,66 @@ function createDownloadLink(blob) {
 
 function updateEmotions(emotionProbs, source) {
 
-    window.inputs += 1;
-
-    if(source != '') {
+    if(source != 'form') {
+        window.inputs += 1;
+        
         emotionProbs['happy'] *= window.weightage[source];
         emotionProbs['sad'] *= window.weightage[source];
         emotionProbs['angry'] *= window.weightage[source];
         emotionProbs['calm'] *= window.weightage[source];
+
+        if(window.inputs > 1) {
+
+            window.emotions['happy'] *= (window.inputs - 1)/window.inputs;
+            window.emotions['sad'] *= (window.inputs - 1)/window.inputs;
+            window.emotions['angry'] *= (window.inputs - 1)/window.inputs;
+            window.emotions['calm'] *= (window.inputs - 1)/window.inputs;
+    
+            emotionProbs['happy'] *= (window.inputs - 1)/window.inputs;
+            emotionProbs['sad'] *= (window.inputs - 1)/window.inputs;
+            emotionProbs['angry'] *= (window.inputs - 1)/window.inputs;
+            emotionProbs['calm'] *= (window.inputs - 1)/window.inputs;
+        }
+
+        window.emotions['happy'] += emotionProbs['happy'];
+        window.emotions['sad'] += emotionProbs['sad'];
+        window.emotions['angry'] += emotionProbs['angry'];
+        window.emotions['calm'] += emotionProbs['calm'];
+
+        document.getElementById('happy-prob').innerHTML = roundProb(window.emotions['happy']);
+        document.getElementById('sad-prob').innerHTML = roundProb(window.emotions['sad']);
+        document.getElementById('angry-prob').innerHTML = roundProb(window.emotions['angry']);
+        document.getElementById('calm-prob').innerHTML = roundProb(window.emotions['calm']);
+
+        document.getElementById(`${source}-emotion-holder`).classList.remove('hide');
+        document.getElementById(`${source}-happy-state-value`).innerHTML = `${roundProb(emotionProbs['happy'])} %`;
+        document.getElementById(`${source}-sad-state-value`).innerHTML = `${roundProb(emotionProbs['sad'])} %`;
+        document.getElementById(`${source}-angry-state-value`).innerHTML = `${roundProb(emotionProbs['angry'])} %`;
+        document.getElementById(`${source}-calm-state-value`).innerHTML = `${roundProb(emotionProbs['calm'])} %`;
+        setEmotions(window.emotions);
+    
     }
 
-    if(window.inputs > 1) {
+    else {
+        window.inputs = 0;
 
-        window.emotions['happy'] *= (window.inputs - 1)/window.inputs;
-        window.emotions['sad'] *= (window.inputs - 1)/window.inputs;
-        window.emotions['angry'] *= (window.inputs - 1)/window.inputs;
-        window.emotions['calm'] *= (window.inputs - 1)/window.inputs;
+        window.emotions['happy'] = emotionProbs['happy'];
+        window.emotions['sad'] = emotionProbs['sad'];
+        window.emotions['angry'] = emotionProbs['angry'];
+        window.emotions['calm'] = emotionProbs['calm'];
 
-        emotionProbs['happy'] *= (window.inputs - 1)/window.inputs;
-        emotionProbs['sad'] *= (window.inputs - 1)/window.inputs;
-        emotionProbs['angry'] *= (window.inputs - 1)/window.inputs;
-        emotionProbs['calm'] *= (window.inputs - 1)/window.inputs;
+        setEmotions(window.emotions);
+
+        window.emotions['happy'] = 0;
+        window.emotions['sad'] = 0;
+        window.emotions['angry'] = 0;
+        window.emotions['calm'] = 0;
+
+        document.getElementById('happy-prob').innerHTML = roundProb(window.emotions['happy']);
+        document.getElementById('sad-prob').innerHTML = roundProb(window.emotions['sad']);
+        document.getElementById('angry-prob').innerHTML = roundProb(window.emotions['angry']);
+        document.getElementById('calm-prob').innerHTML = roundProb(window.emotions['calm']);
     }
-
-    window.emotions['happy'] += emotionProbs['happy'];
-    window.emotions['sad'] += emotionProbs['sad'];
-    window.emotions['angry'] += emotionProbs['angry'];
-    window.emotions['calm'] += emotionProbs['calm'];
-
-    document.getElementById('happy-prob').innerHTML = roundProb(window.emotions['happy']);
-    document.getElementById('sad-prob').innerHTML = roundProb(window.emotions['sad']);
-    document.getElementById('angry-prob').innerHTML = roundProb(window.emotions['angry']);
-    document.getElementById('calm-prob').innerHTML = roundProb(window.emotions['calm']);
-
-    setEmotions(window.emotions);
 };
 
 // Helper function to round a number to two-decimal places
@@ -182,8 +262,13 @@ function setEmotions(emotionVals) {
             window.enhanced_emotion = response['enhancedEmotion'];
             console.log(primary_emotion);
             console.log(enhanced_emotion);
-            document.getElementById('primary-emotion').innerHTML = sentenceCase(primary_emotion)
-            document.getElementById('enhanced-emotion').innerHTML = sentenceCase(enhanced_emotion)
+            pEmotion = document.getElementById('primary-emotion');
+            eEmotion = document.getElementById('enhanced-emotion');
+
+            pEmotion.innerHTML = sentenceCase(primary_emotion)
+            pEmotion.classList.remove('font-italic', 'text-muted');
+            eEmotion.innerHTML = sentenceCase(enhanced_emotion)
+            eEmotion.classList.remove('font-italic', 'text-muted');
         }
     });
 
@@ -197,21 +282,33 @@ function setEmotions(emotionVals) {
 // Function to fetch appropriate genres and web content using the final emotions
 
 function getGenres(primaryEmotion, enhancedEmotion) {
-    $.ajax({
-        type: 'POST',
-        url: '/recommend-genres',
-        data: {
-            csrfmiddlewaretoken: csrftoken,
-            'primary-emotion': primaryEmotion,
-            'enhanced-emotion': enhancedEmotion
-        },
-        success: function(response) {
-            window.genres = response;
-            fillGenres(window.genres);
-            fillContent(window.genres);
-            console.log(window.genres);
-        }
-    });
+    if(primaryEmotion == "Null" || primaryEmotion == "") {
+        window.alert("No Emotions Available!");
+    }
+    else {
+        document.getElementById('genre-loader').classList.remove('hide');
+        $.ajax({
+            type: 'POST',
+            url: '/recommend-genres',
+            data: {
+                csrfmiddlewaretoken: csrftoken,
+                'primary-emotion': primaryEmotion,
+                'enhanced-emotion': enhancedEmotion
+            },
+            success: function(response) {
+                console.log("Got genres");
+                window.genres = response;
+                document.getElementById('genre-loader').classList.add('hide');
+                fillGenres(window.genres);
+                fillContent(window.genres);
+            },
+            error: function(error) { 
+                console.log(error);
+                window.alert("Network Error!");
+                document.getElementById('genre-loader').classList.add('hide');
+            }    
+        });
+    }
 };
 
 // Function to fill fetched genres to the Genre panel
@@ -229,13 +326,26 @@ function fillGenres(genreDict) {
         musicGenreList.innerHTML += `<li class="genre">${capCase(genreDict['musicGenres'][genre])}</li>`;
     };
     for(genre in genreDict['videoGenres']) {
-        videoGenreList.innerHTML += `<li class="genre">${capCase(genreDict['videoGenres'][genre])}</li>`;
+        if(genreDict['videoGenres'][genre] == 'facts english') {
+            videoGenreList.innerHTML += `<li class="genre">${capCase('informative')}</li>`;
+        }
+        else {
+            videoGenreList.innerHTML += `<li class="genre">${capCase(genreDict['videoGenres'][genre])}</li>`;
+        }
     };
     for(genre in genreDict['newsGenres']) {
-        newsGenreList.innerHTML += `<li class="genre">${capCase(genreDict['newsGenres'][genre])}</li>`;
+        if(genreDict['newsGenres'][genre] == 'world') {
+            newsGenreList.innerHTML += `<li class="genre">${capCase('positive')}</li>`;
+        }
+        else {
+            newsGenreList.innerHTML += `<li class="genre">${capCase(genreDict['newsGenres'][genre])}</li>`; 
+        }
     };
 
     function capCase(string) {
+        if(typeof(string) == 'object') {
+            return string;
+        }
         return string.charAt(0).toUpperCase() + string.slice(1);
     };
 };
@@ -243,6 +353,13 @@ function fillGenres(genreDict) {
 // Function to fill music titles into the content page
 
 function fillContent(genreDict) {
+
+    // Removing filler content
+
+    var fillerList = document.getElementsByClassName('genre-filler');
+    fillerList[0].classList.add("hide");
+    fillerList[1].classList.add("hide");
+    fillerList[2].classList.add("hide");
 
     // Filling music content
 
@@ -262,7 +379,7 @@ function fillContent(genreDict) {
                     <br>
                     <span class="small music-artist">${genreDict['musicContent'][genre]['artist_name'][i]}</span>
                     <br>
-                    <a class="music-link" href="${genreDict['musicContent'][genre]['track_url'][i]['spotify']}">PLAY</a>
+                    <a class="music-link btn btn-success" href="${genreDict['musicContent'][genre]['track_url'][i]['spotify']}" target="_blank">PLAY</a>
                 </p>
             </li>
             `
@@ -279,6 +396,15 @@ function fillContent(genreDict) {
         return `https://www.youtube.com/watch?v=${id}`
     };
 
+    function titleLim(title) {
+        if(title.length > 65) {
+            return (title.slice(0, 65) + "...")
+        }
+        else {
+            return title
+        }
+    };
+
     for(genre in genreDict['videoContent']) {
         var i;
         for(i = 0; i < 50; i++) {
@@ -287,11 +413,11 @@ function fillContent(genreDict) {
             <li class="video-item">
                 <img class="list-pic video-thumb" src="${genreDict['videoContent'][genre]['thumbnails'][i]}" alt="video-thumbnail">
                 <p class="video-info text-left">
-                    <span class="video-title">${genreDict['videoContent'][genre]['title'][i]}</span>
+                    <span class="video-title">${titleLim(genreDict['videoContent'][genre]['title'][i])}</span>
                     <br>
                     <span class="small video-artist">${genreDict['videoContent'][genre]['channelTitle'][i]}</span>
                     <br>
-                    <a class="video-link" href="${youtubeURL(genreDict['videoContent'][genre]['videoId'][i])}">PLAY</a>
+                    <a class="video-link btn btn-success" href="${youtubeURL(genreDict['videoContent'][genre]['videoId'][i])}" target="_blank">PLAY</a>
                 </p>
             </li>
             `
@@ -309,20 +435,45 @@ function fillContent(genreDict) {
         for(i = 0; i < 20; i++) {
             newsList.innerHTML += 
             `
-            <ul class="mt-4 no-bullet" id="news-list">
-                <li class="news-item">
-                    <img class="list-pic news-image" src="${genreDict['newsContent'][genre][2][i]}" alt="news-pic">
-                    <p class="news-info text-left">
-                        <span class="news-title">${genreDict['newsContent'][genre][0][i]}</span>
-                        <br>
-                        <a class="news-link" href="${genreDict['newsContent'][genre][1][i]}">READ MORE</a>
-                    </p>
-                </li>
-            </ul>
+            <li class="news-item">
+                <img class="list-pic news-image" src="${genreDict['newsContent'][genre][2][i]}" alt="news-pic">
+                <p class="news-info text-left">
+                    <span class="news-title">${genreDict['newsContent'][genre][0][i]}</span>
+                    <br>
+                    <a class="news-link btn btn-success" href="${genreDict['newsContent'][genre][1][i]}" target="_blank">READ MORE</a>
+                </p>
+            </li>
             `
         }
     }
 
+};
+
+// Function to clear the currently measured emotional levels 
+
+function clearGenres() {
+    console.log(window.emotions['happy']);
+
+    window.emotions['happy'] = 0;
+    document.getElementById('happy-prob').innerHTML = 0;
+    window.emotions['sad'] = 0;
+    document.getElementById('sad-prob').innerHTML = 0;
+    window.emotions['angry'] = 0;
+    document.getElementById('angry-prob').innerHTML = 0;
+    window.emotions['calm'] = 0;
+    document.getElementById('calm-prob').innerHTML = 0;
+    setEmotions(window.emotions);
+    window.inputs = 0;
+
+    pEmotion = document.getElementById('primary-emotion');
+    eEmotion = document.getElementById('enhanced-emotion');
+
+    pEmotion.innerHTML = 'N/A';
+    pEmotion.classList.add('font-italic', 'text-muted');
+    eEmotion.innerHTML = 'N/A';
+    eEmotion.classList.add('font-italic', 'text-muted');
+
+    console.log(window.emotions['happy']);
 };
 
 // jQuery functions
@@ -334,7 +485,7 @@ $(document).ready(function() {
     window.inputs = 0;
     window.weightage = {
         'audio' : 0.75,
-        'video' : 0.78
+        'video' : 0.84
     };
     window.emotions = {
         'happy' : 0,
@@ -353,13 +504,19 @@ $(document).ready(function() {
     $('#emotion-input-form').submit(function(event) {
         event.preventDefault();
         console.log('Form Submitted Successfully');
+        console.log($('#primary-emotion-sel').val());
+        console.log($('#enhanced-emotion-sel').val());
         emotionVals =  {
-            'happy' : Number($('#emotion-input-happy').val()),
-            'sad' : Number($('#emotion-input-sad').val()),
-            'angry' : Number($('#emotion-input-angry').val()),
-            'calm' : Number($('#emotion-input-calm').val())
+            'happy' : 0,
+            'sad' : 0,
+            'angry' : 0,
+            'calm' : 0
         };
-        updateEmotions(emotionVals, '');
+        emotionVals[$('#primary-emotion-sel').val()] = 100;
+        if($('#enhanced-emotion-sel').val() != 'null' && $('#enhanced-emotion-sel').val() != $('#primary-emotion-sel').val()) {
+            emotionVals[$('#enhanced-emotion-sel').val()] = 50;
+        }
+        updateEmotions(emotionVals, 'form');
         console.log(window.emotions);
     });
 
@@ -386,7 +543,10 @@ $(document).ready(function() {
     // Function to initiate video capture session and facial emotion recognition
 
     $('#record-video').click(function(event) {
-        console.log('Video Uploaded Successfully');
+        var rstate = document.getElementById('record-status');
+        rstate.innerHTML = 'Recording';
+        rstate.style = "color: #2ECC40;"
+        move();
         $.ajax({
             type: 'POST',
             url: '/facial-emotion',
@@ -396,6 +556,8 @@ $(document).ready(function() {
             success: function(response) {
                 updateEmotions(response, 'video');
                 console.log(window.emotions);
+                rstate.style = "color: #FF4136;"
+                rstate.innerHTML = 'Not Recording';
             }
         });
     });
@@ -405,6 +567,13 @@ $(document).ready(function() {
     $('#get-genres').click(function(event) {
         console.log('Fetching Genres');
         getGenres(window.primary_emotion, window.enhanced_emotion);
+    });
+
+    // Function to initiate emotion reset
+
+    $('#clear-genres').click(function(event) {
+        console.log('Clearing Emotions');
+        clearGenres();
     });
     
 });

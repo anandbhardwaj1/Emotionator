@@ -5,6 +5,9 @@ def determinePrimary(emotionLevels):
             primaryEmotion = key
             strongestLevel = emotionLevels[key]
 
+    if (strongestLevel == 0):
+        primaryEmotion = 'Null'
+
     return primaryEmotion
 
 
