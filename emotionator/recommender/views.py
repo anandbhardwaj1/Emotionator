@@ -1,11 +1,9 @@
 import os
-import wave
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.conf import settings
-from werkzeug.utils import secure_filename
 from .modules import emotion_identifier as e_id
 from .modules import speech_emotion_identifier as se_id
 from .modules import facial_emotion_identifier as fe_id
@@ -17,6 +15,13 @@ def home(request):
     # View function for rendering the homepage template
 
     return render(request, 'home.html')
+
+
+def about(request):
+
+    # View function for rendering the about-page template
+
+    return render(request, 'about.html')
 
 
 def identifyEmotion(request):

@@ -1,13 +1,7 @@
 import requests
-import webbrowser
 import spotipy
 import pandas as pd
-import pprint
-import matplotlib.pyplot as pd
 from bs4 import BeautifulSoup
-from PIL import ImageTk, Image
-from io import BytesIO
-from urllib.request import urlopen
 from spotipy.oauth2 import SpotifyClientCredentials
 from apiclient.discovery import build
 from apiclient.errors import HttpError
@@ -31,12 +25,12 @@ def getGenres(primaryEmotion, enhancedEmotion):
             }
 
     videoCategoriesKey = {
-            'happy': ['informative'],
+            'happy': ['facts english'],
             'sad': ['stand-up'],
             'angry': ['soothing'],
             'calm': ['motivational'],
-            'energetic': ['informative', 'soothing'],
-            'content': ['informative', 'motivational'],
+            'energetic': ['facts english', 'soothing'],
+            'content': ['facts english', 'motivational'],
             'despair': ['stand-up', 'soothing'],
             'gloomy': ['stand-up', 'motivational']
             }
@@ -59,8 +53,8 @@ def getGenres(primaryEmotion, enhancedEmotion):
     newsCategories = []
 
     if(enhancedEmotion == 'null'):
-        videoCategories.append(videoCategoriesKey[primaryEmotion])
-        newsCategories.append(newsCategoriesKey[primaryEmotion])
+        videoCategories = (videoCategoriesKey[primaryEmotion])
+        newsCategories = (newsCategoriesKey[primaryEmotion])
         musicGenres = musicGenresKey[primaryEmotion]
 
     else:
@@ -120,7 +114,7 @@ def getVideos(genreList):
 
     # Defining API Keys aund auth variables for Youtube API
 
-    DEVELOPER_KEY = "AIzaSyACMrUGO9o6eexlpwjt4O7U5crcMEQg-BQ"
+    DEVELOPER_KEY = "AIzaSyAGJe0SkHTq_fKIDXKaUfCL-R8x4vZuUG0"
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
 

@@ -4,7 +4,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.home, name='rec-home'),
+    path('', views.home, name='home'),
+    path('about', views.about, name='about'),
     path('identify-emotion', views.identifyEmotion, name='identify-emotion'),
     path('speech-emotion', views.speechEmotion, name='speech-emotion'),
     path('facial-emotion', views.facialEmotion, name='facial-emotion'),

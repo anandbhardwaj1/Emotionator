@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    {% load static %}
+
+    <div class="container content-panel about-panel">
+        <div class="row">
+            <div class="col-md-3">
+                <img class="about-logo" style="margin-left: 4rem;" src="{% static 'recommender/img/mesra.png' %}" alt="BIT Mesra">
+            </div>
+            <div class="col-md-6">
+                <h1 class="text-center">ABOUT</h1>
+                <hr class="about-divider">
+                <p class="text-center" style="font-size: medium;">This project is part of the IEEE Megaproject 2k20</p>
+                <div class="about-developers text-center">
+                    <h5>Developed By</h5>
+                    <h3 style="color: #FF851B;">TEAM CRUSADERS</h3>
+                    <div class="row about-names">
+                        <div class="col-md-4">
+                            Anand Bhardwaj
+                            <span class="contact-icon mr-2"><a href="https://github.com/anandbhardwaj1" target="_blank"><i class="fa fa-github"></i></a></span>
+                            <span class="contact-icon ml-2"><a href="mailto:anandraj01021999@gmail.com" target="_blank"><i class="fa fa-envelope"></i></a></span>
+                        </div>
+                        <div class="col-md-4">
+                            Arun K. Bhagat 
+                            <span class="contact-icon mr-2"><a href="https://github.com/ArunBhagat204" target="_blank"><i class="fa fa-github"></i></a></span>
+                            <span class="contact-icon ml-2"><a href="mailto:arun51628@gmail.com" target="_blank"><i class="fa fa-envelope"></i></a></span>
+                        </div>
+                        <div class="col-md-4">
+                            Lakshya Srivastava
+                            <span class="contact-icon mr-2"><a href="https://github.com/Lakshya020801" target="_blank"><i class="fa fa-github"></i></a></span>
+                            <span class="contact-icon ml-2"><a href="mailto:lakshya.sr@gmail.com" target="_blank"><i class="fa fa-envelope"></i></a></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <dic class="col-md-3">
+                <img class="about-logo" src="{% static 'recommender/img/ieee.png' %}" alt="BIT Mesra">
+            </dic>
+        </div>
+    </div>
+
+{% endblock content %}
